@@ -1,6 +1,9 @@
 set nocompatible
 set number
 set relativenumber
+set expandtab
+set shiftwidth=4
+set softtabstop=4
 
 syntax enable
 
@@ -16,6 +19,7 @@ Plugin 'scrooloose/nerdtree'
 Plugin 'kien/ctrlp.vim'
 Plugin 'bling/vim-airline'
 Plugin 'bronson/vim-trailing-whitespace'
+Plugin 'Valloric/YouCompleteMe'
 
 call vundle#end()
 
