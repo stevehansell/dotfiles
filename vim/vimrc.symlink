@@ -1,9 +1,32 @@
 set nocompatible
 set number
 set relativenumber
+set autoindent
+set smartindent
+
+" Spacing and indentation
+"
 set expandtab
-set shiftwidth=4
+set shiftwidth=4 "Number of spaces for autoindent
 set softtabstop=4
+set tabstop=4
+set smarttab " insert tabs on the start of a line according to shiftwidth, not tabstop
+set shiftround
+autocmd FileType python setlocal expandtab shiftwidth=4 softtabstop=4 tabstop=8
+
+set nowrap
+set showmatch " Show matching parens
+set title " Change terminal windows title
+
+set nobackup
+set noswapfile
+
+" Search
+"
+set hlsearch " Highlight search terms
+set incsearch " Show search terms as you type
+set ignorecase " Ignore case when searching
+set smartcase " Ignore case if search is lower, case-sensitive otherwise
 
 syntax enable
 
@@ -19,21 +42,50 @@ Plugin 'scrooloose/nerdtree'
 Plugin 'kien/ctrlp.vim'
 Plugin 'bling/vim-airline'
 Plugin 'bronson/vim-trailing-whitespace'
-Plugin 'Valloric/YouCompleteMe'
+Plugin 'ervandew/supertab'
+Plugin 'MarcWeber/vim-addon-mw-utils'
+Plugin 'tomtom/tlib_vim'
+Plugin 'garbas/vim-snipmate'
+Plugin 'honza/vim-snippets'
 
 call vundle#end()
 
 syntax on
 
-map <C-n> :NERDTreeToggle<CR>
 
 " let g:airline_theme='powerlineish'
 let g:airline_left_sep=''
 let g:airline_right_sep=''
 let g:airline_section_z=''
 
+let g:SuperTabNoCompleteAfter=['^',',','\s']
+
 set background=dark
 colorscheme solarized
 
 " Wrap gitcommit file types at the appropriate length
 filetype indent plugin on
+
+" Remappings
+"
+
+" Delete without copying to register
+map <leader>d "_dd
+
+" Remap window switching
+map <C-h> <C-W>h
+map <C-j> <C-W>j
+map <C-k> <C-W>k
+map <C-l> <C-W>l
+
+" Toggle NERDTree
+map <C-n> :NERDTreeToggle<CR>
+
+" Quickly edit this file
+nmap <leader>ev :e $MYVIMRC<CR>
+
+" Source the .vimrc file
+nmap <leader>es :source $MYVIMRC<CR>
+
+" Clear current search term + highlighting
+nnoremap <silent> <leader>l :nohl<CR>
