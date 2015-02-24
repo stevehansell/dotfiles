@@ -3,6 +3,7 @@ set number
 set relativenumber
 set autoindent
 set smartindent
+set cursorline
 
 " Spacing and indentation
 "
@@ -89,3 +90,8 @@ nmap <leader>es :source $MYVIMRC<CR>
 
 " Clear current search term + highlighting
 nnoremap <silent> <leader>l :nohl<CR>
+
+
+" Open NerdTree automatically if no files are specified
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
