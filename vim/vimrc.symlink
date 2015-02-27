@@ -1,9 +1,10 @@
 set nocompatible
-set number
 set relativenumber
-set autoindent
+"set autoindent
 set smartindent
+set copyindent
 set cursorline
+set colorcolumn=80
 
 " Spacing and indentation
 "
@@ -13,7 +14,6 @@ set softtabstop=4
 set tabstop=4
 set smarttab " insert tabs on the start of a line according to shiftwidth, not tabstop
 set shiftround
-autocmd FileType python setlocal expandtab shiftwidth=4 softtabstop=4 tabstop=8
 
 set nowrap
 set showmatch " Show matching parens
@@ -48,6 +48,7 @@ Plugin 'MarcWeber/vim-addon-mw-utils'
 Plugin 'tomtom/tlib_vim'
 Plugin 'garbas/vim-snipmate'
 Plugin 'honza/vim-snippets'
+Plugin 'scrooloose/NERDCommenter'
 
 call vundle#end()
 
@@ -60,6 +61,8 @@ let g:airline_right_sep=''
 let g:airline_section_z=''
 
 let g:SuperTabNoCompleteAfter=['^',',','\s']
+
+let g:NERDTreeIgnore=['.pyc$[[file]]']
 
 set background=dark
 colorscheme solarized
@@ -91,7 +94,57 @@ nmap <leader>es :source $MYVIMRC<CR>
 " Clear current search term + highlighting
 nnoremap <silent> <leader>l :nohl<CR>
 
+" Toggle relativenumber (See function below)
+nmap <leader>rn :call NumberToggle()<CR>
 
 " Open NerdTree automatically if no files are specified
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+
+" Number of spaces that a pre-existing tab is equal to.
+" For the amount of space used for a enw tab use shiftwidth
+au BufRead,BufNewFile *py,*pyw,*.c,*.h set tabstop=4
+
+" What to use for an indent.
+" This will affect Ctrl-T and 'autoindent'.
+" Python: 4 spaces
+" C: tabs (pre-existing files) or 4 spaces (new files)
+" Ruby: 2 spaces
+au BufRead,BufNewFile *.py,*pyw set shiftwidth=4
+au BufRead,BufNewFile *.py,*pyw set expandtab
+autocmd FileType ruby setlocal tabstop=2 softtabstop=2 shiftwidth=2
+fu Select_c_style()
+    if search('^\t', 'n', 150)
+        set shiftwidth=4
+        set noexpandtab
+    el
+        set shiftwidth=4
+        set expandtab
+    en
+endf
+au BufRead,BufNewFile *.c,*.h call Select_c_style()
+au BufRead,BufNewFile Makefile* set noexpandtab
+
+highlight Badwhitespace ctermbg=red guibg=red
+
+" Display tabs at the beginning of a line in Python mode as bad.
+au BufRead,BufNewFile *.py,*.pyw match Badwhitespace /^\t\+/
+
+" Wrap text after a certain number of characters
+" Python: 79
+" C: 79
+au BufRead,BufNewFile *.py,*.pyw,*.c,*.h set textwidth=79
+
+
+" Delete the following if above is sufficient
+"autocmd FileType python setlocal expandtab shiftwidth=4 softtabstop=4 tabstop=8
+
+" Functions
+"
+function! NumberToggle()
+    if(&relativenumber == 1)
+    	set number
+    else
+    	set relativenumber
+    endif
+endf
