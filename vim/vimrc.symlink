@@ -1,5 +1,6 @@
 set nocompatible
 set relativenumber
+set number
 "set autoindent
 set smartindent
 set copyindent
@@ -49,6 +50,7 @@ Plugin 'tomtom/tlib_vim'
 Plugin 'garbas/vim-snipmate'
 Plugin 'honza/vim-snippets'
 Plugin 'scrooloose/NERDCommenter'
+Plugin 'chrisbra/NrrwRgn'
 
 call vundle#end()
 
@@ -62,9 +64,9 @@ let g:airline_section_z=''
 
 let g:SuperTabNoCompleteAfter=['^',',','\s']
 
-let g:NERDTreeIgnore=['.pyc$[[file]]']
+let g:NERDTreeIgnore=['.pyc$[[file]]','__init__.py','.egg$','.egg-info$']
 
-set background=dark
+set background=light
 colorscheme solarized
 
 " Wrap gitcommit file types at the appropriate length
@@ -97,9 +99,17 @@ nnoremap <silent> <leader>l :nohl<CR>
 " Toggle relativenumber (See function below)
 nmap <leader>rn :call NumberToggle()<CR>
 
-" Open NerdTree automatically if no files are specified
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+" Set buffer to full width
+map <leader>\| <C-W>\|
+
+" Set buffers to equal width
+map <leader>= <C-W>=
+
+" Jump to beginning/end of word in  mode
+inoremap <C-w> <esc>dbi
+inoremap <C-a> <esc>^i
+inoremap <C-e> <esc>$i
+
 
 " Number of spaces that a pre-existing tab is equal to.
 " For the amount of space used for a enw tab use shiftwidth
@@ -112,6 +122,7 @@ au BufRead,BufNewFile *py,*pyw,*.c,*.h set tabstop=4
 " Ruby: 2 spaces
 au BufRead,BufNewFile *.py,*pyw set shiftwidth=4
 au BufRead,BufNewFile *.py,*pyw set expandtab
+au BufRead,BufNewFile *.py,*pyw set nowrap textwidth=0 wrapmargin=0
 autocmd FileType ruby setlocal tabstop=2 softtabstop=2 shiftwidth=2
 fu Select_c_style()
     if search('^\t', 'n', 150)
@@ -133,7 +144,6 @@ au BufRead,BufNewFile *.py,*.pyw match Badwhitespace /^\t\+/
 " Wrap text after a certain number of characters
 " Python: 79
 " C: 79
-au BufRead,BufNewFile *.py,*.pyw,*.c,*.h set textwidth=79
 
 
 " Delete the following if above is sufficient
@@ -141,10 +151,3 @@ au BufRead,BufNewFile *.py,*.pyw,*.c,*.h set textwidth=79
 
 " Functions
 "
-function! NumberToggle()
-    if(&relativenumber == 1)
-    	set number
-    else
-    	set relativenumber
-    endif
-endf
