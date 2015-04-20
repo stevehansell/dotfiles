@@ -1,0 +1,12 @@
+# Usage: pyfind <pattern>
+# Description: pyfind finds files with the .py extension and <pattern> with grep
+
+pyfind () {
+
+    if [ -n $1 ]; then
+        find . -name '*.py' -print | xargs grep -ni $1
+    else
+        echo "A pattern is required"
+    fi
+
+}
