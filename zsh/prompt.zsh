@@ -25,6 +25,9 @@
 ### Segment drawing
 # A few utility functions to make it easy and re-usable to draw segmented prompts
 
+# Disable the default VIRTUALENV prompt
+export VIRTUAL_ENV_DISABLE_PROMPT=yes
+
 CURRENT_BG='NONE'
 SEGMENT_SEPARATOR='\ue0b0'
 
@@ -47,7 +50,7 @@ prompt_segment() {
 # End the prompt, closing any open segments
 prompt_end() {
   if [[ -n $CURRENT_BG ]]; then
-    echo -n " %{%k%F{$CURRENT_BG}%}$SEGMENT_SEPARATOR"
+    echo -n " %{%k%F{$CURRENT_BG}%}"
   else
     echo -n "%{%k%}"
   fi
@@ -75,27 +78,29 @@ prompt_git() {
     dirty=$(parse_git_dirty)
     ref=$(git symbolic-ref HEAD 2> /dev/null) || ref="➦ $(git show-ref --head -s --abbrev |head -n1 2> /dev/null)"
     if [[ -n $dirty ]]; then
-      prompt_segment yellow black
+      prompt_segment default yellow
     else
-      prompt_segment green black
+      prompt_segment default green
     fi
-    echo -n "${ref/refs\/heads\//\ue0a0 }$dirty"
+    echo "${ref/refs\/heads\// \ue0a0}"
   fi
 }
 
 function collapse_pwd {
+  local cwd
   if [[ -n $(pwd | grep ^$HOME/Development/ ) ]]; then
-    echo $(pwd | sed -e "s,^$HOME/Development/,,")
+    cwd=$(pwd | sed -e "s,^$HOME/Development/,,")
   elif [[ -n $(pwd | grep ^$HOME/talks/ ) ]]; then
-    echo $(pwd | sed -e "s,^$HOME/talks/,,")
+    cwd=$(pwd | sed -e "s,^$HOME/talks/,,")
   else
-      echo $(pwd | sed -e "s,^$HOME,~,")
+      cwd=$(pwd | sed -e "s,^$HOME,~,")
   fi
+  echo "%{$fg[magenta]%}${cwd}%{$fg[default]%}"
 }
 
 # Dir: current working directory
 prompt_dir() {
-  prompt_segment blue white $(collapse_pwd)
+  echo -n $(collapse_pwd)
 }
 
 # Status:
@@ -109,20 +114,27 @@ prompt_status() {
   [[ $UID -eq 0 ]] && symbols+="%{%F{yellow}%}⚡"
   [[ $(jobs -l | wc -l) -gt 0 ]] && symbols+="%{%F{cyan}%}⚙"
 
-  [[ -n "$symbols" ]] && prompt_segment black default "$symbols"
+  #[[ -n "$symbols" ]] && "$symbols"
+}
+
+function virtualenv_info {
+[ $VIRTUAL_ENV ] && echo "%{$fg[cyan]%}("`basename $VIRTUAL_ENV`")%{$reset_color%}"
+}
+
+prompt_symbol() {
+  echo -e "%{$fg_bold[blue]%}\U279C%{$fg_no_bold[default]%} "
 }
 
 ## Main prompt
 build_prompt() {
   RETVAL=$?
-  prompt_status
   prompt_context
   prompt_dir
-  prompt_git
   prompt_end
 }
 
-PROMPT='
-%{%f%b%k%}$(build_prompt) '
+PROMPT='%{%f%b%k%}
+$(build_prompt)$(virtualenv_info)
+$(prompt_symbol)'
 
-RPROMPT='!%!'
+RPROMPT='$(prompt_git) $(prompt_end)'

@@ -1,11 +1,12 @@
 set nocompatible
 set relativenumber
 set number
-"set autoindent
+set autoindent
 set smartindent
 set copyindent
 set cursorline
 set colorcolumn=80
+set t_Co=256
 
 " Spacing and indentation
 "
@@ -30,6 +31,14 @@ set incsearch " Show search terms as you type
 set ignorecase " Ignore case when searching
 set smartcase " Ignore case if search is lower, case-sensitive otherwise
 
+set wildmenu " Completion in command line mode
+set autoread " Autoreload file when modified outside of vim, but not IN Vim
+set fileformats+=mac
+
+if &shell =~# 'fish$'
+    set shell=/bin/bash
+endif
+
 syntax enable
 
 filetype off " Required
@@ -49,8 +58,12 @@ Plugin 'MarcWeber/vim-addon-mw-utils'
 Plugin 'tomtom/tlib_vim'
 Plugin 'garbas/vim-snipmate'
 Plugin 'honza/vim-snippets'
+Plugin 'mustache/vim-mustache-handlebars'
 Plugin 'scrooloose/NERDCommenter'
 Plugin 'chrisbra/NrrwRgn'
+Plugin 'godlygeek/csapprox'
+Plugin 'scrooloose/syntastic'
+"Plugin 'klen/python-mode'
 
 call vundle#end()
 
@@ -66,8 +79,8 @@ let g:SuperTabNoCompleteAfter=['^',',','\s']
 
 let g:NERDTreeIgnore=['.pyc$[[file]]','__init__.py','.egg$','.egg-info$']
 
-set background=light
-colorscheme solarized
+set background=dark
+colorscheme lavalamp
 
 " Wrap gitcommit file types at the appropriate length
 filetype indent plugin on
@@ -105,49 +118,94 @@ map <leader>\| <C-W>\|
 " Set buffers to equal width
 map <leader>= <C-W>=
 
-" Jump to beginning/end of word in  mode
-inoremap <C-w> <esc>dbi
-inoremap <C-a> <esc>^i
-inoremap <C-e> <esc>$i
+map <leader>t gt
 
+" Better indenting of code blocks
+vnoremap < <gv " Indents selection left
+vnoremap > >gv " Indents selection right
+
+nnoremap <silent>[b :bprevious<CR>
+nnoremap <silent>]b :bnext<CR>
+nnoremap <silent>[B :bfirst<CR>
+nnoremap <silent>]B :blast<CR>
+
+" Dont open NERDTree if files are passed
+autocmd VimEnter * NERDTree
+autocmd VimEnter * if argc() == 0 | NERDTree | endif
+
+autocmd FileType ruby setlocal tabstop=2 softtabstop=2 shiftwidth=2
+
+" Python Mode Config
+"let g:pymode_virtualenv_path = $VIRTUAL_ENV
+
+
+" vimrc file for following the coding standards specified in PEP 7 & 8.
+"
+" To use this file, source it in your own personal .vimrc file (``source
+" <filename>``) or, if you don't have a .vimrc file, you can just symlink to it
+" (``ln -s <this file> ~/.vimrc``).  All options are protected by autocmds
+" (read below for an explanation of the command) so blind sourcing of this file
+" is safe and will not affect your settings for non-Python or non-C files.
+"
+"
+" All setting are protected by 'au' ('autocmd') statements.  Only files ending
+" in .py or .pyw will trigger the Python settings while files ending in *.c or
+" *.h will trigger the C settings.  This makes the file "safe" in terms of only
+" adjusting settings for Python and C files.
+"
+" Only basic settings needed to enforce the style guidelines are set.
+" Some suggested options are listed but commented out at the end of this file.
 
 " Number of spaces that a pre-existing tab is equal to.
-" For the amount of space used for a enw tab use shiftwidth
-au BufRead,BufNewFile *py,*pyw,*.c,*.h set tabstop=4
+" For the amount of space used for a new tab use shiftwidth.
+au BufRead,BufNewFile *py,*pyw,*.c,*.h set tabstop=8
 
 " What to use for an indent.
 " This will affect Ctrl-T and 'autoindent'.
 " Python: 4 spaces
 " C: tabs (pre-existing files) or 4 spaces (new files)
-" Ruby: 2 spaces
-au BufRead,BufNewFile *.py,*pyw set shiftwidth=4
-au BufRead,BufNewFile *.py,*pyw set expandtab
-au BufRead,BufNewFile *.py,*pyw set nowrap textwidth=0 wrapmargin=0
-autocmd FileType ruby setlocal tabstop=2 softtabstop=2 shiftwidth=2
-fu Select_c_style()
-    if search('^\t', 'n', 150)
-        set shiftwidth=4
-        set noexpandtab
-    el
-        set shiftwidth=4
-        set expandtab
-    en
-endf
+au BufRead,BufNewFile *.py,*pyw set shiftwidth=8 softtabstop=8 noexpandtab
+" au BufRead,BufNewFile *.py,*.pyw set expandtab
+if !exists("*Select_c_style")
+    fu Select_c_style()
+        if search('^\t', 'n', 150)
+            set shiftwidth=8
+            set noexpandtab
+        el
+            set shiftwidth=8
+            set expandtab
+        en
+    endf
+endif
 au BufRead,BufNewFile *.c,*.h call Select_c_style()
+"au BufRead,BufNewFile *.py call Select_c_style()
 au BufRead,BufNewFile Makefile* set noexpandtab
 
-highlight Badwhitespace ctermbg=red guibg=red
+" Use the below highlight group when displaying bad whitespace is desired.
+highlight BadWhitespace ctermbg=red guibg=red
 
 " Display tabs at the beginning of a line in Python mode as bad.
-au BufRead,BufNewFile *.py,*.pyw match Badwhitespace /^\t\+/
+"au BufRead,BufNewFile *.py,*.pyw match BadWhitespace /^\t\+/
+" Make trailing whitespace be flagged as bad.
+au BufRead,BufNewFile *.py,*.pyw,*.c,*.h match BadWhitespace /\s\+$/
 
 " Wrap text after a certain number of characters
 " Python: 79
 " C: 79
+"au BufRead,BufNewFile *.py,*.pyw,*.c,*.h set textwidth=0 nowrap
 
+" Turn off settings in 'formatoptions' relating to comment formatting.
+" - c : do not automatically insert the comment leader when wrapping based on
+"    'textwidth'
+" - o : do not insert the comment leader when using 'o' or 'O' from command mode
+" - r : do not insert the comment leader when hitting <Enter> in insert mode
+" Python: not needed
+" C: prevents insertion of '*' at the beginning of every line in a comment
+au BufRead,BufNewFile *.c,*.h set formatoptions-=c formatoptions-=o formatoptions-=r
 
-" Delete the following if above is sufficient
-"autocmd FileType python setlocal expandtab shiftwidth=4 softtabstop=4 tabstop=8
-
-" Functions
-"
+" Use UNIX (\n) line endings.
+" Only used for new files so as to not force existing files to change their
+" line endings.
+" Python: yes
+" C: yes
+au BufNewFile *.py,*.pyw,*.c,*.h set fileformat=unix

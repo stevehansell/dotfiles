@@ -6,6 +6,7 @@ fi
 
 export LSCOLORS="exfxcxdxbxegedabagacad"
 export CLICOLOR=true
+autoload -U colors && colors
 
 fpath=($ZSH/functions $fpath)
 
@@ -48,5 +49,15 @@ bindkey '^[[3~' delete-char
 bindkey '^[^N' newtab
 bindkey '^?' backward-delete-char
 
-ZSH_THEME="agnoster"
+# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
+# # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
+# # Example format: plugins=(rails git textmate ruby lighthouse)
+# # Add wisely, as too many plugins slow down shell startup.
+#plugins=(git python)
+
+#ZSH_THEME="agnoster"
 DEFAULT_USER="shansell"
+
+# Custom exports
+export PYTHONDONTWRITEBYTECODE=1
+

@@ -1,0 +1,4 @@
+growl () {
+    say "Hello, world"
+    terminal-notifier -title "Pssssst !!" -subtitle "A message from your shell:" -message "$@"
+}
