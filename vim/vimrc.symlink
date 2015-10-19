@@ -1,54 +1,13 @@
-set nocompatible
-set relativenumber
-set number
-set autoindent
-set smartindent
-set copyindent
-set cursorline
-set colorcolumn=80
-set t_Co=256
 
-" Spacing and indentation
-"
-set expandtab
-set shiftwidth=4 "Number of spaces for autoindent
-set softtabstop=4
-set tabstop=4
-set smarttab " insert tabs on the start of a line according to shiftwidth, not tabstop
-set shiftround
+" Vundle {{{
 
-set nowrap
-set showmatch " Show matching parens
-set title " Change terminal windows title
-
-set nobackup
-set noswapfile
-
-" Search
-"
-set hlsearch " Highlight search terms
-set incsearch " Show search terms as you type
-set ignorecase " Ignore case when searching
-set smartcase " Ignore case if search is lower, case-sensitive otherwise
-
-set wildmenu " Completion in command line mode
-set autoread " Autoreload file when modified outside of vim, but not IN Vim
-set fileformats+=mac
-
-if &shell =~# 'fish$'
-    set shell=/bin/bash
-endif
-
-syntax enable
-
-filetype off " Required
+filetype off " Required by Vundle
 
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
 Plugin 'gmarik/Vundle.vim'
 Plugin 'tpope/vim-sensible'
-Plugin 'altercation/vim-colors-solarized'
 Plugin 'scrooloose/nerdtree'
 Plugin 'kien/ctrlp.vim'
 Plugin 'bling/vim-airline'
@@ -62,55 +21,106 @@ Plugin 'mustache/vim-mustache-handlebars'
 Plugin 'scrooloose/NERDCommenter'
 Plugin 'chrisbra/NrrwRgn'
 Plugin 'godlygeek/csapprox'
-Plugin 'scrooloose/syntastic'
-"Plugin 'klen/python-mode'
+"Plugin 'scrooloose/syntastic'
+Plugin 'janko-m/vim-test'
+Plugin 'airblade/vim-gitgutter'
+Plugin 'tpope/vim-dispatch'
+Plugin 'majutsushi/tagbar'
+Plugin 'klen/python-mode'
 
 call vundle#end()
 
+" }}}
+
+" Theme/UI {{{
+
+colorscheme hybrid
+set t_Co=256            " No. of colors
+syntax enable           " Enables syntax processing
 syntax on
 
+let g:enable_bold_font = 1
+let g:airline_theme='hybridline'
+let g:airline_powerline_fonts=1
+set guifont=Hack                        " List of fonts which will be used for the GUI version of Vim.
+if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+endif
+let g:airline_symbols.space = "\ua0"
 
-" let g:airline_theme='powerlineish'
-let g:airline_left_sep=''
-let g:airline_right_sep=''
-let g:airline_section_z=''
+" }}}
 
-let g:SuperTabNoCompleteAfter=['^',',','\s']
+" UI Config {{{
+set nocompatible
+filetype indent plugin on " Loads lang specific indent settings
+set wildmenu            " Visual autocomplete for command menu
+set nonumber
+set relativenumber      " Offset current line number from zero
+set number              " Show current line number
+set cursorline          " Highlight the screen line
+set colorcolumn=80      " Highlight at N columns
+set autoindent          " Copy indent from current line when starting new line
+set smartindent         " Autoindents next line based on current syntax
+set copyindent          " Copy the structure of the existing lines indent when autoindenting a new line.
+set lazyredraw          " Redraw screen only when necessary
+set showmatch           " Show matching [({})]
+set title               " Change terminal windows title
+set nowrap              " Do not wrap lines that are longer than the buffer width
+set textwidth=0         " Set to zero by default to disable line wrapping.
+set completeopt-=preview " Removes preview window for Insert mode completion
 
-let g:NERDTreeIgnore=['.pyc$[[file]]','__init__.py','.egg$','.egg-info$']
+" Use the below highlight group when displaying bad whitespace is desired.
+highlight BadWhitespace ctermbg=red guibg=red
+" }}}
 
-set background=dark
-colorscheme lavalamp
+" Searching {{{
+set hlsearch " Highlight search terms
+set incsearch " Show search terms as you type
+set ignorecase " Ignore case when searching
+set smartcase " Ignore case if search is lower, case-sensitive otherwise
+" }}}
 
-" Wrap gitcommit file types at the appropriate length
-filetype indent plugin on
+" Folding {{{
+set foldenable          " Enable folding
+set foldlevelstart=10   " Open most folds by default
+set foldnestmax=10      " 10 nested folds maximum
+"set foldmethod=indent   " Fold based on indent level
+" }}}
 
-" Remappings
-"
-
-" Delete without copying to register
-map <leader>d "_dd
-
-" Remap window switching
+" Window Management {{{
 map <C-h> <C-W>h
 map <C-j> <C-W>j
 map <C-k> <C-W>k
 map <C-l> <C-W>l
 
-" Toggle NERDTree
-map <C-n> :NERDTreeToggle<CR>
+" }}}
+
+" Buffer Management {{{
+nnoremap <silent>[b :bprevious<CR>
+nnoremap <silent>]b :bnext<CR>
+nnoremap <silent>[B :bfirst<CR>
+nnoremap <silent>]B :blast<CR>
+"}}}
+
+" Leader Shortcuts {{{
+
+" Delete without copying to register
+map <leader>d "_dd
 
 " Quickly edit this file
-nmap <leader>ev :e $MYVIMRC<CR>
+nnoremap <leader>ev :e $MYVIMRC<CR>
 
 " Source the .vimrc file
-nmap <leader>es :source $MYVIMRC<CR>
+nnoremap <leader>es :source $MYVIMRC<CR>
+
+" Edit .dotfiles in Vim
+nnoremap <leader>ed :e ~/.dotfiles<CR>
 
 " Clear current search term + highlighting
 nnoremap <silent> <leader>l :nohl<CR>
 
-" Toggle relativenumber (See function below)
-nmap <leader>rn :call NumberToggle()<CR>
+" Changes tab `3gt` goes to third tab
+map <leader>t gt
 
 " Set buffer to full width
 map <leader>\| <C-W>\|
@@ -118,94 +128,73 @@ map <leader>\| <C-W>\|
 " Set buffers to equal width
 map <leader>= <C-W>=
 
-map <leader>t gt
-
 " Better indenting of code blocks
-vnoremap < <gv " Indents selection left
-vnoremap > >gv " Indents selection right
+vnoremap < <gv
+vnoremap > >gv
+"}}}
 
-nnoremap <silent>[b :bprevious<CR>
-nnoremap <silent>]b :bnext<CR>
-nnoremap <silent>[B :bfirst<CR>
-nnoremap <silent>]B :blast<CR>
+" Backup and File Settings {{{
+set nobackup            " Disable backup files
+set noswapfile          " Disable swap file creation
+set autoread " Autoreload file when modified outside of vim, but not IN Vim
+set fileformats+=mac
+"}}}
 
-" Dont open NERDTree if files are passed
-autocmd VimEnter * NERDTree
-autocmd VimEnter * if argc() == 0 | NERDTree | endif
+" NERDTree Settings {{{
 
-autocmd FileType ruby setlocal tabstop=2 softtabstop=2 shiftwidth=2
+" Toggle NERDTree buffer
+map <silent><C-n> :NERDTreeToggle<CR>
 
-" Python Mode Config
-"let g:pymode_virtualenv_path = $VIRTUAL_ENV
+let g:NERDTreeIgnore=['.pyc$[[file]]','__init__.py','.egg$','.egg-info$']
+let g:nerdtree_tabs_no_startup_for_diff=0
+let g:nerdtree_tabs_autoclose=1
+let g:nerdtree_tabs_startup_cd=1
+" }}}
 
+" CtrlP Settings {{{
+let g:ctrlp_match_window='bottom,order:ttb'
+let g:ctrlp_switch_buffer=0             " Open in new buffer
+let g:ctrlp_working_path_mode=0         " Allows changing working directory in CtrlP
+" }}}
 
-" vimrc file for following the coding standards specified in PEP 7 & 8.
-"
-" To use this file, source it in your own personal .vimrc file (``source
-" <filename>``) or, if you don't have a .vimrc file, you can just symlink to it
-" (``ln -s <this file> ~/.vimrc``).  All options are protected by autocmds
-" (read below for an explanation of the command) so blind sourcing of this file
-" is safe and will not affect your settings for non-Python or non-C files.
-"
-"
-" All setting are protected by 'au' ('autocmd') statements.  Only files ending
-" in .py or .pyw will trigger the Python settings while files ending in *.c or
-" *.h will trigger the C settings.  This makes the file "safe" in terms of only
-" adjusting settings for Python and C files.
-"
-" Only basic settings needed to enforce the style guidelines are set.
-" Some suggested options are listed but commented out at the end of this file.
+" Syntastic Settings {{{
+let g:syntastic_cucumber_cucumber_args="--profile default"
+"}}}
 
-" Number of spaces that a pre-existing tab is equal to.
-" For the amount of space used for a new tab use shiftwidth.
-au BufRead,BufNewFile *py,*pyw,*.c,*.h set tabstop=8
+" Pymode Settings {{{
+let g:pymode_folding = 0
+let g:pymode_lint_on_write = 1
+let g:pymode_lint_unmodified = 1
+let g:pymode_lint_ignore = "W191,E501"
+let g:pymode_lint_message = 1
+"}}}
 
-" What to use for an indent.
-" This will affect Ctrl-T and 'autoindent'.
-" Python: 4 spaces
-" C: tabs (pre-existing files) or 4 spaces (new files)
-au BufRead,BufNewFile *.py,*pyw set shiftwidth=8 softtabstop=8 noexpandtab
-" au BufRead,BufNewFile *.py,*.pyw set expandtab
-if !exists("*Select_c_style")
-    fu Select_c_style()
-        if search('^\t', 'n', 150)
-            set shiftwidth=8
-            set noexpandtab
-        el
-            set shiftwidth=8
-            set expandtab
-        en
-    endf
+" SuperTab Settings {{{
+let g:SuperTabNoCompleteAfter=['^',',','\s']
+"}}}
+
+" TagBar Settings {{{
+nmap <leader>ot :TagbarToggle<CR>
+"}}}
+
+" Autogroups {{{
+
+augroup configgroup
+    autocmd!
+    autocmd VimEnter * highlight clear SignColumn               " On Vim load
+    autocmd FileType ruby setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab smarttab shiftround
+    autocmd FileType python setlocal tabstop=4 shiftwidth=4 softtabstop=4 noexpandtab smarttab shiftround
+    autocmd BufEnter *.sh setlocal tabstop=2
+    autocmd BufEnter *.sh setlocal shiftwidth=2
+    autocmd BufEnter *.sh setlocal softtabstop=2
+    autocmd BufEnter Makefile setlocal noexpandtab
+    autocmd BufNewFile *.py,*.pyw,*.c,*.h set fileformat=unix  " Use UNIX (\n) line endings
+augroup END
+
+"}}}
+
+if &shell =~# 'fish$'
+    set shell=/bin/bash
 endif
-au BufRead,BufNewFile *.c,*.h call Select_c_style()
-"au BufRead,BufNewFile *.py call Select_c_style()
-au BufRead,BufNewFile Makefile* set noexpandtab
 
-" Use the below highlight group when displaying bad whitespace is desired.
-highlight BadWhitespace ctermbg=red guibg=red
-
-" Display tabs at the beginning of a line in Python mode as bad.
-"au BufRead,BufNewFile *.py,*.pyw match BadWhitespace /^\t\+/
-" Make trailing whitespace be flagged as bad.
-au BufRead,BufNewFile *.py,*.pyw,*.c,*.h match BadWhitespace /\s\+$/
-
-" Wrap text after a certain number of characters
-" Python: 79
-" C: 79
-"au BufRead,BufNewFile *.py,*.pyw,*.c,*.h set textwidth=0 nowrap
-
-" Turn off settings in 'formatoptions' relating to comment formatting.
-" - c : do not automatically insert the comment leader when wrapping based on
-"    'textwidth'
-" - o : do not insert the comment leader when using 'o' or 'O' from command mode
-" - r : do not insert the comment leader when hitting <Enter> in insert mode
-" Python: not needed
-" C: prevents insertion of '*' at the beginning of every line in a comment
-au BufRead,BufNewFile *.c,*.h set formatoptions-=c formatoptions-=o formatoptions-=r
-
-" Use UNIX (\n) line endings.
-" Only used for new files so as to not force existing files to change their
-" line endings.
-" Python: yes
-" C: yes
-au BufNewFile *.py,*.pyw,*.c,*.h set fileformat=unix
+" vim:foldmethod=marker:foldlevel=0
