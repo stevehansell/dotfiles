@@ -1,1 +1,1 @@
-PATH="$PATH:$HOME/bin"
+PATH="$PATH:$HOME/bin:$HOME/.dotfiles/bin"

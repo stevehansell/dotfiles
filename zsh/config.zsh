@@ -57,7 +57,3 @@ bindkey '^?' backward-delete-char
 
 #ZSH_THEME="agnoster"
 DEFAULT_USER="shansell"
-
-# Custom exports
-export PYTHONDONTWRITEBYTECODE=1
-

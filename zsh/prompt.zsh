@@ -95,7 +95,7 @@ function collapse_pwd {
   else
       cwd=$(pwd | sed -e "s,^$HOME,~,")
   fi
-  echo "%{$fg[magenta]%}${cwd}%{$fg[default]%}"
+  echo "%{$fg[blue]%}${cwd}%{$fg[default]%}"
 }
 
 # Dir: current working directory

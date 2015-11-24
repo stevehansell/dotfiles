@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+pulls () {
+    REMOTE='upstream'
+    GH_USER='GannettDigital'
+
+    REPOS="gupui gupas platform-config ui-service-framework"
+
+    for repo in gupui gupas platform-config ui-service-framework ui-service-framework-boilerplate resource-services guts firefly-core fire-py
+    do
+        /usr/local/bin/gh pr --list --repo $repo --user $GH_USER
+        printf "\n--\n"
+    done
+}
+
+pulls

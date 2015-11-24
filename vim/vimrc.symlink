@@ -27,6 +27,7 @@ Plugin 'airblade/vim-gitgutter'
 Plugin 'tpope/vim-dispatch'
 Plugin 'majutsushi/tagbar'
 Plugin 'klen/python-mode'
+Plugin 'NLKNguyen/papercolor-theme'
 
 call vundle#end()
 
@@ -34,13 +35,14 @@ call vundle#end()
 
 " Theme/UI {{{
 
-colorscheme hybrid
+colorscheme PaperColor
+set background=dark
 set t_Co=256            " No. of colors
 syntax enable           " Enables syntax processing
 syntax on
 
 let g:enable_bold_font = 1
-let g:airline_theme='hybridline'
+let g:airline_theme='PaperColor'
 let g:airline_powerline_fonts=1
 set guifont=Hack                        " List of fonts which will be used for the GUI version of Vim.
 if !exists('g:airline_symbols')
@@ -84,14 +86,13 @@ set smartcase " Ignore case if search is lower, case-sensitive otherwise
 set foldenable          " Enable folding
 set foldlevelstart=10   " Open most folds by default
 set foldnestmax=10      " 10 nested folds maximum
-"set foldmethod=indent   " Fold based on indent level
 " }}}
 
 " Window Management {{{
-map <C-h> <C-W>h
-map <C-j> <C-W>j
-map <C-k> <C-W>k
-map <C-l> <C-W>l
+nnoremap <C-h> <C-W>h
+nnoremap <C-j> <C-W>j
+nnoremap <C-k> <C-W>k
+nnoremap <C-l> <C-W>l
 
 " }}}
 
@@ -105,7 +106,7 @@ nnoremap <silent>]B :blast<CR>
 " Leader Shortcuts {{{
 
 " Delete without copying to register
-map <leader>d "_dd
+nnoremap <leader>d "_dd
 
 " Quickly edit this file
 nnoremap <leader>ev :e $MYVIMRC<CR>
@@ -120,17 +121,23 @@ nnoremap <leader>ed :e ~/.dotfiles<CR>
 nnoremap <silent> <leader>l :nohl<CR>
 
 " Changes tab `3gt` goes to third tab
-map <leader>t gt
+nnoremap <leader>t gt
 
 " Set buffer to full width
-map <leader>\| <C-W>\|
+nnoremap <leader>\| <C-W>\|
 
 " Set buffers to equal width
-map <leader>= <C-W>=
+nnoremap <leader>= <C-W>=
 
 " Better indenting of code blocks
 vnoremap < <gv
 vnoremap > >gv
+nnoremap < v$<<esc>
+nnoremap > v$><esc>
+
+nnoremap <silent> <leader>. :TestFile<CR>
+nnoremap <silent> <leader>, :TestSuite<CR>
+nnoremap <silent> <leader>n :TestNearest<CR>
 "}}}
 
 " Backup and File Settings {{{
@@ -143,7 +150,7 @@ set fileformats+=mac
 " NERDTree Settings {{{
 
 " Toggle NERDTree buffer
-map <silent><C-n> :NERDTreeToggle<CR>
+nnoremap <silent><C-n> :NERDTreeToggle<CR>
 
 let g:NERDTreeIgnore=['.pyc$[[file]]','__init__.py','.egg$','.egg-info$']
 let g:nerdtree_tabs_no_startup_for_diff=0
@@ -152,6 +159,7 @@ let g:nerdtree_tabs_startup_cd=1
 " }}}
 
 " CtrlP Settings {{{
+let g:ctrlp_custom_ignore = '\v\.(pyc)$'
 let g:ctrlp_match_window='bottom,order:ttb'
 let g:ctrlp_switch_buffer=0             " Open in new buffer
 let g:ctrlp_working_path_mode=0         " Allows changing working directory in CtrlP
@@ -162,7 +170,8 @@ let g:syntastic_cucumber_cucumber_args="--profile default"
 "}}}
 
 " Pymode Settings {{{
-let g:pymode_folding = 0
+let g:pymode_folding = 1
+let g:pymode_lint = 1
 let g:pymode_lint_on_write = 1
 let g:pymode_lint_unmodified = 1
 let g:pymode_lint_ignore = "W191,E501"
@@ -174,27 +183,56 @@ let g:SuperTabNoCompleteAfter=['^',',','\s']
 "}}}
 
 " TagBar Settings {{{
-nmap <leader>ot :TagbarToggle<CR>
+nmap <silent> <leader>ot :TagbarToggle<CR>
+nmap <silent> <leader>of :TagbarOpenAutoClose<CR>
+let g:tagbar_autofocus=1    " Autofocus Tagbar on toggle/open
 "}}}
+
+" vim-test Settings {{{
+let test#python#runner = 'pytest'
+let test#python#pytest#file_pattern = 'tests*\.py'
+let test#python#pytest#options = '-q'
+
+function! StrategyDispatchWithDjangoSettingsModule(cmd)
+	execute 'Dispatch ' . SetDjangoSettingsModule() . ' ' . a:cmd
+endfunction
+
+let g:test#custom_strategies = {'dispatch_with_django_settings_module': function('StrategyDispatchWithDjangoSettingsModule')}
+let g:test#strategy = 'dispatch_with_django_settings_module'
+
+" }}}
 
 " Autogroups {{{
 
+augroup filetype_vim
+	autocmd!
+	autocmd FileType vim setlocal foldmethod=marker foldlevelstart=0 foldlevel=0
+augroup END
+
 augroup configgroup
     autocmd!
+    "autocmd BufEnter * silent! lcd %:p:h " Auto `cd` on buffer change
     autocmd VimEnter * highlight clear SignColumn               " On Vim load
     autocmd FileType ruby setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab smarttab shiftround
     autocmd FileType python setlocal tabstop=4 shiftwidth=4 softtabstop=4 noexpandtab smarttab shiftround
+    autocmd FileType python setlocal tabstop=4 shiftwidth=4 softtabstop=4 noexpandtab smarttab shiftround
+    autocmd FileType vim setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab smarttab shiftround
+    autocmd FileType cucumber setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab smarttab shiftround
     autocmd BufEnter *.sh setlocal tabstop=2
     autocmd BufEnter *.sh setlocal shiftwidth=2
     autocmd BufEnter *.sh setlocal softtabstop=2
     autocmd BufEnter Makefile setlocal noexpandtab
     autocmd BufNewFile *.py,*.pyw,*.c,*.h set fileformat=unix  " Use UNIX (\n) line endings
 augroup END
-
 "}}}
 
-if &shell =~# 'fish$'
-    set shell=/bin/bash
-endif
+" Custom Functions {{{
 
-" vim:foldmethod=marker:foldlevel=0
+fun! SetDjangoSettingsModule()
+	let l:path_to_current_file = expand('%:p:h')
+	let l:project_root_directory = split(substitute(l:path_to_current_file, expand($PROJECTS), '', ''), '\W\+')[0]
+	let l:module = "DJANGO_SETTINGS_MODULE=" . l:project_root_directory . ".settings.unittest"
+	return l:module
+endf
+
+" }}}

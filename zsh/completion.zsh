@@ -74,3 +74,5 @@ if [ "x$COMPLETION_WAITING_DOTS" = "xtrue" ]; then
   bindkey "^I" expand-or-complete-with-dots
 fi
 
+# Custom completions
+compdef g=git
