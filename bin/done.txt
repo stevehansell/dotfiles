@@ -1,0 +1,19 @@
+x 2015-10-26 Create SocialData class to handle social data functionality +GUP
+x 2015-10-27 Update UserMixin class to make call to users/credentials#post +CredMan +GUP
+x 2015-10-27 Update GUP to use new SocialData class +CredMan
+x 2015-10-29 Disconnect provider test fails in full test suite +CredentialManagement
+x 2015-11-06 Figure out how to set context before processing template +CredMan
+x 2015-11-06 Remaining CSS +CredentialManagement
+x 2015-11-10 Review gupui/pull/180 +CodeReview
+x 2015-11-10 Text config changes +CredMan
+x 2015-11-10 Password change back button not returning to credential management +CredMan
+x 2015-11-10 Persistent params cause lost user +CredMan
+x 2015-11-11 Review GUP#181 +PR +GUP
+x 2015-11-23 Move 4.13.2 to stage
+x 2015-11-24 Change Capybara.app_host to work with multiple UAIDS
+x 2015-11-25 GUPAS URL should configure uaid +GUP
+x 2015-11-30 Review GUP PRs +GUP
+x 2015-11-30 Update GUP-378 in JIRA
+x 2015-12-01 Fix CM QA issues
+x 2015-12-02 Have Aaron test GUP-410 on Stage +GUP
+x 2015-12-03 Cancel button in disconnect provider views +CredentialManagement +GUP

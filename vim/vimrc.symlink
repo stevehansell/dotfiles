@@ -8,7 +8,6 @@ call vundle#begin()
 
 Plugin 'gmarik/Vundle.vim'
 Plugin 'tpope/vim-sensible'
-Plugin 'scrooloose/nerdtree'
 Plugin 'kien/ctrlp.vim'
 Plugin 'bling/vim-airline'
 Plugin 'bronson/vim-trailing-whitespace'
@@ -19,8 +18,6 @@ Plugin 'garbas/vim-snipmate'
 Plugin 'honza/vim-snippets'
 Plugin 'mustache/vim-mustache-handlebars'
 Plugin 'scrooloose/NERDCommenter'
-Plugin 'chrisbra/NrrwRgn'
-Plugin 'godlygeek/csapprox'
 "Plugin 'scrooloose/syntastic'
 Plugin 'janko-m/vim-test'
 Plugin 'airblade/vim-gitgutter'
@@ -28,6 +25,9 @@ Plugin 'tpope/vim-dispatch'
 Plugin 'majutsushi/tagbar'
 Plugin 'klen/python-mode'
 Plugin 'NLKNguyen/papercolor-theme'
+Plugin 'jceb/vim-orgmode'
+Plugin 'tpope/vim-speeddating'
+Plugin 'mileszs/ack.vim'
 
 call vundle#end()
 
@@ -70,6 +70,7 @@ set title               " Change terminal windows title
 set nowrap              " Do not wrap lines that are longer than the buffer width
 set textwidth=0         " Set to zero by default to disable line wrapping.
 set completeopt-=preview " Removes preview window for Insert mode completion
+set grepprg=ag          " Use Silver Searcher instead of grep
 
 " Use the below highlight group when displaying bad whitespace is desired.
 highlight BadWhitespace ctermbg=red guibg=red
@@ -85,6 +86,7 @@ set smartcase " Ignore case if search is lower, case-sensitive otherwise
 " Folding {{{
 set foldenable          " Enable folding
 set foldlevelstart=10   " Open most folds by default
+set foldlevel=10   " Open most folds by default
 set foldnestmax=10      " 10 nested folds maximum
 " }}}
 
@@ -97,19 +99,21 @@ nnoremap <C-l> <C-W>l
 " }}}
 
 " Buffer Management {{{
-nnoremap <silent>[b :bprevious<CR>
-nnoremap <silent>]b :bnext<CR>
-nnoremap <silent>[B :bfirst<CR>
-nnoremap <silent>]B :blast<CR>
+nnoremap <leader>bb :buffers<CR>
+nnoremap <leader>bp :bprevious<CR>
+nnoremap <leader>bn :bnext<CR>
+nnoremap <leader>bf :bfirst<CR>
+nnoremap <leader>bl :blast<CR>
+nnoremap <leader>bt <C-^>
 "}}}
 
-" Leader Shortcuts {{{
+" Mapping and Leader Shortcuts {{{
 
 " Delete without copying to register
 nnoremap <leader>d "_dd
 
 " Quickly edit this file
-nnoremap <leader>ev :e $MYVIMRC<CR>
+nnoremap <leader>ev :tabnew $MYVIMRC<CR>
 
 " Source the .vimrc file
 nnoremap <leader>es :source $MYVIMRC<CR>
@@ -135,9 +139,18 @@ vnoremap > >gv
 nnoremap < v$<<esc>
 nnoremap > v$><esc>
 
+" Quickfix management
+nnoremap <Space><Space> :ccl<cr>
+
+" Trigger silver searcher for word under cursor
+nnoremap <Leader>cs :call SearchForCallSitesCursor()<CR>
+
 nnoremap <silent> <leader>. :TestFile<CR>
 nnoremap <silent> <leader>, :TestSuite<CR>
 nnoremap <silent> <leader>n :TestNearest<CR>
+
+
+nnoremap <silent><C-n> :Explore<CR>
 "}}}
 
 " Backup and File Settings {{{
@@ -147,15 +160,19 @@ set autoread " Autoreload file when modified outside of vim, but not IN Vim
 set fileformats+=mac
 "}}}
 
+" Explore Settings {{{
+let g:netrw_list_hide= '\.pyc,__init__\.py,\.egg$,.*\.egg-info/$,\.ropeproject/$,\.DS_Store$'
+" }}}
+
 " NERDTree Settings {{{
 
 " Toggle NERDTree buffer
-nnoremap <silent><C-n> :NERDTreeToggle<CR>
+"nnoremap <silent><C-n> :NERDTreeToggle<CR>
 
-let g:NERDTreeIgnore=['.pyc$[[file]]','__init__.py','.egg$','.egg-info$']
-let g:nerdtree_tabs_no_startup_for_diff=0
-let g:nerdtree_tabs_autoclose=1
-let g:nerdtree_tabs_startup_cd=1
+"let g:NERDTreeIgnore=['.pyc$[[file]]','__init__.py','.egg$','.egg-info$']
+"let g:nerdtree_tabs_no_startup_for_diff=0
+"let g:nerdtree_tabs_autoclose=1
+"let g:nerdtree_tabs_startup_cd=1
 " }}}
 
 " CtrlP Settings {{{
@@ -163,6 +180,12 @@ let g:ctrlp_custom_ignore = '\v\.(pyc)$'
 let g:ctrlp_match_window='bottom,order:ttb'
 let g:ctrlp_switch_buffer=0             " Open in new buffer
 let g:ctrlp_working_path_mode=0         " Allows changing working directory in CtrlP
+
+" Make CtrlP use ag for listing the files. Way faster and no useless files.
+" " Without --hidden, it never finds .travis.yml since it starts with a dot
+let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+let g:ctrlp_use_caching = 0
+
 " }}}
 
 " Syntastic Settings {{{
@@ -188,7 +211,15 @@ nmap <silent> <leader>of :TagbarOpenAutoClose<CR>
 let g:tagbar_autofocus=1    " Autofocus Tagbar on toggle/open
 "}}}
 
+" Ack Settings {{{
+if executable('ag')
+  let g:ackprg = 'ag --vimgrep'
+  let g:ack_use_dispatch=1
+endif
+"}}}
+
 " vim-test Settings {{{
+let g:pymode_virtualenv = 1
 let test#python#runner = 'pytest'
 let test#python#pytest#file_pattern = 'tests*\.py'
 let test#python#pytest#options = '-q'
@@ -215,14 +246,15 @@ augroup configgroup
     autocmd VimEnter * highlight clear SignColumn               " On Vim load
     autocmd FileType ruby setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab smarttab shiftround
     autocmd FileType python setlocal tabstop=4 shiftwidth=4 softtabstop=4 noexpandtab smarttab shiftround
-    autocmd FileType python setlocal tabstop=4 shiftwidth=4 softtabstop=4 noexpandtab smarttab shiftround
+    autocmd FileType json setlocal tabstop=4 shiftwidth=4 softtabstop=4 expandtab smarttab shiftround
     autocmd FileType vim setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab smarttab shiftround
-    autocmd FileType cucumber setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab smarttab shiftround
+    autocmd FileType cucumber setlocal tabstop=2 shiftwidth=2 softtabstop=2 noexpandtab smarttab shiftround
     autocmd BufEnter *.sh setlocal tabstop=2
     autocmd BufEnter *.sh setlocal shiftwidth=2
     autocmd BufEnter *.sh setlocal softtabstop=2
     autocmd BufEnter Makefile setlocal noexpandtab
     autocmd BufNewFile *.py,*.pyw,*.c,*.h set fileformat=unix  " Use UNIX (\n) line endings
+    autocmd FileType org setlocal textwidth=0 colorcolumn=0 tabstop=2 shiftwidth=2 softtabstop=2
 augroup END
 "}}}
 
@@ -234,5 +266,10 @@ fun! SetDjangoSettingsModule()
 	let l:module = "DJANGO_SETTINGS_MODULE=" . l:project_root_directory . ".settings.unittest"
 	return l:module
 endf
+
+function! SearchForCallSitesCursor()
+  let searchTerm = expand("<cword>")
+  execute ":Ack! " . l:searchTerm . " " . getcwd()
+endfunction
 
 " }}}

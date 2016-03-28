@@ -1,0 +1,13 @@
+#!/bin/sh
+#
+# Fast-fowards HEAD from the given remote. Defaults to upstream.
+
+set -e
+
+FF_REMOTE="$1"
+
+if [[ -z "$FF_REMOTE" ]]; then
+	FF_REMOTE="upstream"
+fi
+
+git rebase $FF_REMOTE/"$(git rev-parse --abbrev-ref HEAD)"
