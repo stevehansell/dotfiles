@@ -1,45 +1,71 @@
 local return_code="%(?..%{$fg[red]%}%? ↵%{$reset_color%})"
 
-ZSH_THEME_GIT_PROMPT_PREFIX='‹'
-ZSH_THEME_GIT_PROMPT_SUFFIX='›'
-ZSH_THEME_GIT_PROMPT_DIRTY="%{$fg_bold[yellow]%}"
-ZSH_THEME_GIT_PROMPT_CLEAN="%{$fg_bold[green]%}"
 
-git_prompt() {
-  ref=$(command git symbolic-ref HEAD 2> /dev/null) || \
-  ref=$(command git rev-parse --short HEAD 2> /dev/null) || return
-	echo "$(parse_git_dirty)‹${ref#refs/heads/}›%{$reset_color%}"
+function collapse_pwd {
+  local cwd
+  if [[ -n $(pwd | grep ^$HOME/Development/ ) ]]; then
+    cwd=$(pwd | sed -e "s,^$HOME/Development/,,")
+  elif [[ -n $(pwd | grep ^$HOME/talks/ ) ]]; then
+    cwd=$(pwd | sed -e "s,^$HOME/talks/,,")
+  else
+      cwd=$(pwd | sed -e "s,^$HOME,~,")
+  fi
+  echo "${cwd}"
 }
 
-if [[ $UID -eq 0 ]]; then
-	local user_host='%{$terminfo[bold]$fg[red]%}%n@%m%{$reset_color%}'
-else
-	local user_host=''
-fi
+#### LEARNING!
 
-local current_dir='%{$terminfo[bold]$fg[white]%} %~%{$reset_color%}'
-local rvm_ruby=''
-if which rvm-prompt &> /dev/null; then
-	rvm_ruby='%{$fg[red]%}‹$(rvm-prompt i v g)›%{$reset_color%}'
-else
-	if which rbenv &> /dev/null; then
-		rvm_ruby='%{$fg[red]%}‹$(rbenv version | sed -e "s/ (set.*$//")›%{$reset_color%}'
-	fi
-fi
+function set_prompt_symbol_color() {
+  if $(command git rev-parse --is-inside-work-tree 2> /dev/null); then
+		INDEX=$(command git status --short 2> /dev/null)
+		COLOR=""
+    if [[ "clean" == $(parse_git_dirty) ]]; then
+			COLOR="%{$fg_bold[green]%}"
+    fi
+    if [[ "dirty" == $(parse_git_dirty) ]]; then
+			COLOR="%{$fg_bold[red]%}"
+			if [[ -n $(echo "$INDEX" | grep -E '^\?\?') ]]; then
+				COLOR="%{$fg_bold[magenta]%}"
+			fi
+		fi
+  else
+		COLOR="%{$fg_bold[black]%}"
+  fi
+  echo $COLOR
+}
 
-#local git_branch='$(git_prompt_info)%{$reset_color%}'
-local git_branch='$(git_prompt)'
+
+function git_prompt() {
+  ref=$(command git symbolic-ref HEAD 2> /dev/null) || \
+  ref=$(command git rev-parse --short HEAD 2> /dev/null) || return
+	echo "%{$fg_bold[cyan]%}[✭ ${ref#refs/heads/}]%{$reset_color%}"
+}
+
 
 export VIRTUAL_ENV_DISABLE_PROMPT=yes
-local vrt_env=''
-if [ $VIRTUAL_ENV ]; then
-	vrt_env='%{$fg_bold[cyan]%}‹`basename $VIRTUAL_ENV`›%{$reset_color%}'
-fi
+function set_pyenv_prompt() {
+	if [ $VIRTUAL_ENV ]; then
+		echo "%{$fg_bold[green]%}[ξ `basename $VIRTUAL_ENV`]%{$reset_color%}"
+	fi
+}
 
-local top_prompt_symbol='%{$fg_bold[blue]%}╭─%{$reset_color%}'
-local bottom_prompt_symbol='%{$fg_bold[blue]%}╰─ %B$%b%{$reset_color%}'
+
+function set_rbenv_prompt() {
+	if which rbenv &> /dev/null; then
+		echo "%{$fg_bold[red]%}[♦ $(rbenv version | sed -e "s/ (set.*$//")]%{$reset_color%}"
+	fi
+}
+
+
+local current_dir='%{$terminfo[bold]$fg[white]%}$(collapse_pwd)%{$reset_color%}'
+local prompt_color='$(set_prompt_symbol_color)'
+local prompt_symbol="${prompt_color}❯❯❯%{$reset_color%}"
+local git_branch='$(git_prompt)'
+local pyenv_prompt="$(set_pyenv_prompt)"
+local rbenv_prompt="$(set_rbenv_prompt)"
 
 PROMPT="
-${top_prompt_symbol}${user_host}${current_dir} ${git_branch} ${vrt_env}
-${bottom_prompt_symbol} "
+${current_dir} ${git_branch} ${pyenv_prompt} ${rbenv_prompt}
+${prompt_symbol} "
+
 RPS1="${return_code}"
