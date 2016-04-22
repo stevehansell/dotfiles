@@ -1,0 +1,17 @@
+#!/bin/sh
+#
+# Show mentioned Jira issues in commits between release and <branch>.
+
+branch="$1"
+if [[ -z "$branch" ]]; then
+ echo "Branch name required"
+ echo "Example: git issues-in-release my-last-feature"
+ exit 1
+fi
+
+current_branch=$(git rev-parse --abbrev-ref HEAD)
+echo "\n Issues in $current_branch since $branch\n"
+commits=$(git log --grep 'GUP-*' ...upstream/$branch)
+issues=$(echo "$commits" | sed -En 's/.*(GUP-[0-9]+).*/  * \1 [https:\/\/jira.gannett.com\/browse\/\1]/p' | uniq | sort)
+
+echo "$issues"
