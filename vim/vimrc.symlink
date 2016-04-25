@@ -25,9 +25,10 @@ Plugin 'tpope/vim-dispatch'
 Plugin 'majutsushi/tagbar'
 Plugin 'klen/python-mode'
 Plugin 'NLKNguyen/papercolor-theme'
-Plugin 'jceb/vim-orgmode'
 Plugin 'tpope/vim-speeddating'
 Plugin 'mileszs/ack.vim'
+Plugin 'christoomey/vim-tmux-runner'
+Plugin 'christoomey/vim-tmux-navigator'
 
 call vundle#end()
 
@@ -197,7 +198,7 @@ let g:pymode_folding = 1
 let g:pymode_lint = 1
 let g:pymode_lint_on_write = 1
 let g:pymode_lint_unmodified = 1
-let g:pymode_lint_ignore = "W191,E501"
+let g:pymode_lint_ignore = "W191,E501,W503"
 let g:pymode_lint_message = 1
 "}}}
 
@@ -216,6 +217,17 @@ if executable('ag')
   let g:ackprg = 'ag --vimgrep'
   let g:ack_use_dispatch=1
 endif
+"}}}
+
+" Tmux Runner Settings {{{
+let g:VtrStripLeadingWhitespace=0
+let g:VtrClearEmptyLines=0
+let g:VtrAppendNewline=1
+
+let g:VtrUseVtrMaps=1
+
+nnoremap <leader>va :VtrAttachToPane<CR>
+
 "}}}
 
 " vim-test Settings {{{
