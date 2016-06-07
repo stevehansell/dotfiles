@@ -8,6 +8,7 @@ call vundle#begin()
 
 Plugin 'gmarik/Vundle.vim'
 Plugin 'tpope/vim-sensible'
+Plugin 'tpope/vim-fugitive'
 Plugin 'kien/ctrlp.vim'
 Plugin 'bling/vim-airline'
 Plugin 'bronson/vim-trailing-whitespace'
@@ -19,9 +20,9 @@ Plugin 'honza/vim-snippets'
 Plugin 'mustache/vim-mustache-handlebars'
 Plugin 'scrooloose/NERDCommenter'
 "Plugin 'scrooloose/syntastic'
-Plugin 'janko-m/vim-test'
-Plugin 'airblade/vim-gitgutter'
+"Plugin 'janko-m/vim-test'
 Plugin 'tpope/vim-dispatch'
+Plugin 'airblade/vim-gitgutter'
 Plugin 'majutsushi/tagbar'
 Plugin 'klen/python-mode'
 Plugin 'NLKNguyen/papercolor-theme'
@@ -144,12 +145,7 @@ nnoremap > v$><esc>
 nnoremap <Space><Space> :ccl<cr>
 
 " Trigger silver searcher for word under cursor
-nnoremap <Leader>cs :call SearchForCallSitesCursor()<CR>
-
-nnoremap <silent> <leader>. :TestFile<CR>
-nnoremap <silent> <leader>, :TestSuite<CR>
-nnoremap <silent> <leader>n :TestNearest<CR>
-
+nnoremap <Leader>ac :call SearchForCallSitesCursor()<CR>
 
 nnoremap <silent><C-n> :Explore<CR>
 "}}}
@@ -227,6 +223,7 @@ let g:VtrAppendNewline=1
 let g:VtrUseVtrMaps=1
 
 nnoremap <leader>va :VtrAttachToPane<CR>
+nnoremap <leader>fr :VtrFocusRunner<CR>
 
 "}}}
 
@@ -259,6 +256,7 @@ augroup configgroup
     autocmd FileType ruby setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab smarttab shiftround
     autocmd FileType python setlocal tabstop=4 shiftwidth=4 softtabstop=4 noexpandtab smarttab shiftround
     autocmd FileType json setlocal tabstop=4 shiftwidth=4 softtabstop=4 expandtab smarttab shiftround
+    autocmd FileType javascript setlocal tabstop=4 shiftwidth=4 softtabstop=4 noexpandtab smarttab shiftround
     autocmd FileType vim setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab smarttab shiftround
     autocmd FileType cucumber setlocal tabstop=2 shiftwidth=2 softtabstop=2 noexpandtab smarttab shiftround
     autocmd BufEnter *.sh setlocal tabstop=2

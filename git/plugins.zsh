@@ -6,6 +6,11 @@ function git_prompt_info() {
 }
 
 
+function is_git_dir() {
+  echo $(command git rev-parse --is-inside-work-tree 2> /dev/null)
+}
+
+
 # Checks if working tree is dirty
 parse_git_dirty() {
   local SUBMODULE_SYNTAX=''
@@ -21,12 +26,12 @@ parse_git_dirty() {
         GIT_STATUS=$(command git status -s ${SUBMODULE_SYNTAX} 2> /dev/null | tail -n1)
     fi
     if [[ -n $GIT_STATUS ]]; then
-      echo $ZSH_THEME_GIT_PROMPT_DIRTY
+      echo "dirty"
     else
-      echo $ZSH_THEME_GIT_PROMPT_CLEAN
+      echo "clean"
     fi
   else
-    echo $ZSH_THEME_GIT_PROMPT_CLEAN
+    echo "clean"
   fi
 }
 
