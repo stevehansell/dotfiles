@@ -13,6 +13,6 @@ then
 fi
 
 # Install homebrew packages
-brew install grc coreutils spark
+brew install grc coreutils vim tmux reattach-to-user-namespace the_silver_searcher tree
 
 exit 0
