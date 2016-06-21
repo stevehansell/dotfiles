@@ -12,21 +12,23 @@ Plugin 'tpope/vim-fugitive'
 Plugin 'kien/ctrlp.vim'
 Plugin 'bling/vim-airline'
 Plugin 'bronson/vim-trailing-whitespace'
-Plugin 'ervandew/supertab'
 Plugin 'MarcWeber/vim-addon-mw-utils'
 Plugin 'tomtom/tlib_vim'
+" vim-snipmate requires vim-addon-mw-utils and tlib_vim
 Plugin 'garbas/vim-snipmate'
+" Includes snippets usable by snipmate
 Plugin 'honza/vim-snippets'
-Plugin 'mustache/vim-mustache-handlebars'
+
+"Plugin 'ervandew/supertab'
+
 Plugin 'scrooloose/NERDCommenter'
 "Plugin 'scrooloose/syntastic'
 "Plugin 'janko-m/vim-test'
 Plugin 'tpope/vim-dispatch'
 Plugin 'airblade/vim-gitgutter'
-Plugin 'majutsushi/tagbar'
+"Plugin 'majutsushi/tagbar'
 Plugin 'klen/python-mode'
 Plugin 'NLKNguyen/papercolor-theme'
-Plugin 'tpope/vim-speeddating'
 Plugin 'mileszs/ack.vim'
 Plugin 'christoomey/vim-tmux-runner'
 Plugin 'christoomey/vim-tmux-navigator'
@@ -97,7 +99,6 @@ nnoremap <C-h> <C-W>h
 nnoremap <C-j> <C-W>j
 nnoremap <C-k> <C-W>k
 nnoremap <C-l> <C-W>l
-
 " }}}
 
 " Buffer Management {{{
@@ -158,18 +159,7 @@ set fileformats+=mac
 "}}}
 
 " Explore Settings {{{
-let g:netrw_list_hide= '\.pyc,__init__\.py,\.egg$,.*\.egg-info/$,\.ropeproject/$,\.DS_Store$'
-" }}}
-
-" NERDTree Settings {{{
-
-" Toggle NERDTree buffer
-"nnoremap <silent><C-n> :NERDTreeToggle<CR>
-
-"let g:NERDTreeIgnore=['.pyc$[[file]]','__init__.py','.egg$','.egg-info$']
-"let g:nerdtree_tabs_no_startup_for_diff=0
-"let g:nerdtree_tabs_autoclose=1
-"let g:nerdtree_tabs_startup_cd=1
+let g:netrw_list_hide= '\.pyc,__init__\.py,\.egg$,.*\.egg-info/$,\.ropeproject/$,\.DS_Store$,node_modules/$,\.git/$'
 " }}}
 
 " CtrlP Settings {{{
@@ -202,12 +192,6 @@ let g:pymode_lint_message = 1
 let g:SuperTabNoCompleteAfter=['^',',','\s']
 "}}}
 
-" TagBar Settings {{{
-nmap <silent> <leader>ot :TagbarToggle<CR>
-nmap <silent> <leader>of :TagbarOpenAutoClose<CR>
-let g:tagbar_autofocus=1    " Autofocus Tagbar on toggle/open
-"}}}
-
 " Ack Settings {{{
 if executable('ag')
   let g:ackprg = 'ag --vimgrep'
@@ -226,21 +210,6 @@ nnoremap <leader>va :VtrAttachToPane<CR>
 nnoremap <leader>fr :VtrFocusRunner<CR>
 
 "}}}
-
-" vim-test Settings {{{
-let g:pymode_virtualenv = 1
-let test#python#runner = 'pytest'
-let test#python#pytest#file_pattern = 'tests*\.py'
-let test#python#pytest#options = '-q'
-
-function! StrategyDispatchWithDjangoSettingsModule(cmd)
-	execute 'Dispatch ' . SetDjangoSettingsModule() . ' ' . a:cmd
-endfunction
-
-let g:test#custom_strategies = {'dispatch_with_django_settings_module': function('StrategyDispatchWithDjangoSettingsModule')}
-let g:test#strategy = 'dispatch_with_django_settings_module'
-
-" }}}
 
 " Autogroups {{{
 
@@ -269,13 +238,6 @@ augroup END
 "}}}
 
 " Custom Functions {{{
-
-fun! SetDjangoSettingsModule()
-	let l:path_to_current_file = expand('%:p:h')
-	let l:project_root_directory = split(substitute(l:path_to_current_file, expand($PROJECTS), '', ''), '\W\+')[0]
-	let l:module = "DJANGO_SETTINGS_MODULE=" . l:project_root_directory . ".settings.unittest"
-	return l:module
-endf
 
 function! SearchForCallSitesCursor()
   let searchTerm = expand("<cword>")
