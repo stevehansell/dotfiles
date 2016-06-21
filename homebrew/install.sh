@@ -13,6 +13,7 @@ then
 fi
 
 # Install homebrew packages
-brew install grc coreutils vim tmux reattach-to-user-namespace the_silver_searcher tree
+brew install grc coreutils tmux reattach-to-user-namespace the_silver_searcher tree
+brew install vim --override-system-vim
 
 exit 0
