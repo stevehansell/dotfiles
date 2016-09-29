@@ -10,6 +10,6 @@ alias be='bundle exec'
 
 alias w='workon'
 
-alias t='todo -d ~/.todo/config'
+alias t='tmux'
 
 alias k='clear'

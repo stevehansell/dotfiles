@@ -10,7 +10,8 @@ Plugin 'gmarik/Vundle.vim'
 Plugin 'tpope/vim-sensible'
 Plugin 'tpope/vim-fugitive'
 Plugin 'kien/ctrlp.vim'
-Plugin 'bling/vim-airline'
+Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
 Plugin 'bronson/vim-trailing-whitespace'
 Plugin 'MarcWeber/vim-addon-mw-utils'
 Plugin 'tomtom/tlib_vim'
@@ -19,7 +20,7 @@ Plugin 'garbas/vim-snipmate'
 " Includes snippets usable by snipmate
 Plugin 'honza/vim-snippets'
 
-"Plugin 'ervandew/supertab'
+Plugin 'ervandew/supertab'
 
 Plugin 'scrooloose/NERDCommenter'
 "Plugin 'scrooloose/syntastic'
@@ -27,11 +28,16 @@ Plugin 'scrooloose/NERDCommenter'
 Plugin 'tpope/vim-dispatch'
 Plugin 'airblade/vim-gitgutter'
 "Plugin 'majutsushi/tagbar'
-Plugin 'klen/python-mode'
+"Plugin 'klen/python-mode'
 Plugin 'NLKNguyen/papercolor-theme'
 Plugin 'mileszs/ack.vim'
 Plugin 'christoomey/vim-tmux-runner'
 Plugin 'christoomey/vim-tmux-navigator'
+
+Plugin 'pangloss/vim-javascript'
+Plugin 'mxw/vim-jsx'
+"Plugin 'othree/yajs.vim'
+"Plugin 'othree/javascript-libraries-syntax.vim'
 
 call vundle#end()
 
@@ -46,14 +52,15 @@ syntax enable           " Enables syntax processing
 syntax on
 
 let g:enable_bold_font = 1
-let g:airline_theme='PaperColor'
+let g:airline_theme='papercolor'
 let g:airline_powerline_fonts=1
 set guifont=Hack                        " List of fonts which will be used for the GUI version of Vim.
 if !exists('g:airline_symbols')
     let g:airline_symbols = {}
 endif
 let g:airline_symbols.space = "\ua0"
-
+let g:airline#extensions#branch#enabled = 0
+let g:airline#extensions#hunks#enabled = 0
 " }}}
 
 " UI Config {{{
@@ -65,6 +72,7 @@ set relativenumber      " Offset current line number from zero
 set number              " Show current line number
 set cursorline          " Highlight the screen line
 set colorcolumn=80      " Highlight at N columns
+set cindent
 set autoindent          " Copy indent from current line when starting new line
 set smartindent         " Autoindents next line based on current syntax
 set copyindent          " Copy the structure of the existing lines indent when autoindenting a new line.
@@ -74,7 +82,6 @@ set title               " Change terminal windows title
 set nowrap              " Do not wrap lines that are longer than the buffer width
 set textwidth=0         " Set to zero by default to disable line wrapping.
 set completeopt-=preview " Removes preview window for Insert mode completion
-set grepprg=ag          " Use Silver Searcher instead of grep
 
 " Use the below highlight group when displaying bad whitespace is desired.
 highlight BadWhitespace ctermbg=red guibg=red
@@ -159,19 +166,22 @@ set fileformats+=mac
 "}}}
 
 " Explore Settings {{{
-let g:netrw_list_hide= '\.pyc,__init__\.py,\.egg$,.*\.egg-info/$,\.ropeproject/$,\.DS_Store$,node_modules/$,\.git/$'
+let g:netrw_list_hide= '\.pyc,__init__\.py,\.egg$,.*\.egg-info/$,\.ropeproject/$,\.DS_Store$,node_modules/$,\.git/$,\.json\.gzip$,\.vscode/$'
 " }}}
 
 " CtrlP Settings {{{
-let g:ctrlp_custom_ignore = '\v\.(pyc)$'
 let g:ctrlp_match_window='bottom,order:ttb'
 let g:ctrlp_switch_buffer=0             " Open in new buffer
 let g:ctrlp_working_path_mode=0         " Allows changing working directory in CtrlP
 
-" Make CtrlP use ag for listing the files. Way faster and no useless files.
-" " Without --hidden, it never finds .travis.yml since it starts with a dot
-let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
-let g:ctrlp_use_caching = 0
+if executable('ag')
+  set grepprg=ag\ --no-group\ --no-color         " Use Silver Searcher instead of grep
+
+  " Make CtrlP use ag for listing the files. Way faster and no useless files.
+  " " Without --hidden, it never finds .travis.yml since it starts with a dot
+  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+  let g:ctrlp_use_caching = 0
+endif
 
 " }}}
 
@@ -214,8 +224,8 @@ nnoremap <leader>fr :VtrFocusRunner<CR>
 " Autogroups {{{
 
 augroup filetype_vim
-	autocmd!
-	autocmd FileType vim setlocal foldmethod=marker foldlevelstart=0 foldlevel=0
+  autocmd!
+  autocmd FileType vim setlocal foldmethod=marker foldlevelstart=0 foldlevel=0
 augroup END
 
 augroup configgroup
@@ -225,7 +235,9 @@ augroup configgroup
     autocmd FileType ruby setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab smarttab shiftround
     autocmd FileType python setlocal tabstop=4 shiftwidth=4 softtabstop=4 noexpandtab smarttab shiftround
     autocmd FileType json setlocal tabstop=4 shiftwidth=4 softtabstop=4 expandtab smarttab shiftround
-    autocmd FileType javascript setlocal tabstop=4 shiftwidth=4 softtabstop=4 noexpandtab smarttab shiftround
+    autocmd FileType javascript setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab smarttab shiftround
+    autocmd FileType html setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab smarttab shiftround
+    autocmd FileType css,scss setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab smarttab shiftround
     autocmd FileType vim setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab smarttab shiftround
     autocmd FileType cucumber setlocal tabstop=2 shiftwidth=2 softtabstop=2 noexpandtab smarttab shiftround
     autocmd BufEnter *.sh setlocal tabstop=2
@@ -236,6 +248,11 @@ augroup configgroup
     autocmd FileType org setlocal textwidth=0 colorcolumn=0 tabstop=2 shiftwidth=2 softtabstop=2
 augroup END
 "}}}
+
+ " JavaScript Libraries {{{
+ let g:jsx_ext_required=0
+  "let g:used_javascript_libs = 'react,flux,chai'
+" }}}
 
 " Custom Functions {{{
 

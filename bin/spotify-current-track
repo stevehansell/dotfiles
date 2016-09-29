@@ -1,0 +1,18 @@
+#!/bin/sh
+
+SPOTIFY_TRACK=$(osascript <<EOF
+	if appIsRunning("Spotify") then
+		tell app "Spotify"
+			set currentArtist to artist of current track as string
+			set currentTrack to name of current track as string
+
+			return currentArtist & " ♫ " & currentTrack
+		end tell
+	end if
+
+	on appIsRunning(appName)
+		tell app "System Events" to (name of processes) contains appName
+	end appIsRunning
+EOF)
+
+echo $SPOTIFY_TRACK

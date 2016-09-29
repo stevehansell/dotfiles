@@ -9,7 +9,7 @@ bind k select-pane -U
 bind l select-pane -R
 bind-key -r C-h select-window -t :-
 bind-key -r C-l select-window -t :+
-bind-key L last-window
+bind-key b last-window
 
 # Smart pane switching with awareness of vim splits
 # # See: https://github.com/christoomey/vim-tmux-navigator
@@ -33,10 +33,14 @@ set -g renumber-windows on
 
 # remove administrative debris (session name, hostname, time) in status bar
 set -g status-left ''
-set -g status-right ''
+set -g status-right '#(spotify-current-track)  '
+set -g status-right-length 150
+set -g status-interval 5
 
 set -g status-bg '#333333'
 set -g status-fg '#aaaaaa'
+set-window-option -g window-status-current-bg 'cyan'
+set-window-option -g window-status-current-fg '#ffffff'
 
 
 # prefix -> back-one-character
@@ -48,7 +52,7 @@ bind-key C-s send-prefix -2
 if-shell "[ -f ~/.tmux.conf.local ]" 'source ~/.tmux.conf.local'
 
 # Mouseable window scrolling
-set -g mode-mouse on
+set -g mouse on
 
 # increase scrollback lines
 set -g history-limit 10000
@@ -60,6 +64,12 @@ set -s escape-time 0
 unbind r
 bind r source-file ~/.tmux.conf
 
+unbind p
+bind p run-shell "spotify-playpause"
+
+unbind n
+bind n run-shell "spotify-next-track"
+
 # Use vim keybindings in copy mode
 setw -g mode-keys vi
 
@@ -70,5 +80,8 @@ bind-key -t vi-copy y copy-pipe "reattach-to-user-namespace pbcopy"
 # Update default binding of `Enter` to also use copy-pipe
 unbind -t vi-copy Enter
 bind-key -t vi-copy Enter copy-pipe "reattach-to-user-namespace pbcopy"
+
+# Find occurences of "Error"
+bind-key e copy-mode \; send-keys "?Error" C-m
 
 run-shell ~/.dotfiles/tmux/tmux-open/open.tmux

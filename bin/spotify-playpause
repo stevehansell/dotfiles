@@ -1,0 +1,9 @@
+#!/bin/sh
+
+$(osascript <<EOF
+tell app "Spotify"
+	if it is running then
+		playpause
+	end if
+end tell
+EOF)

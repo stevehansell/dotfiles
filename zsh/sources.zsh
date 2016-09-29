@@ -1,3 +1,3 @@
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
-source /usr/local/bin/virtualenvwrapper.sh
+#eval "$(pyenv init -)"
+#eval "$(pyenv virtualenv-init -)"
+#source /usr/local/bin/virtualenvwrapper.sh
