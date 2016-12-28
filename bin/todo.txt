@@ -1,7 +1,0 @@
-(C) Review newsletter-management/pull/4 +CodeReview
-(D) Add Gemfile to GUP +GUP
-(D) Review Gregs PR in GUPUI +GUP
-(C) Platform configs as test configs +GUP
-(C) Review Aarons automation documentation
-(A) Move tickets to Stage once QA passes +GUP
-(A) Move 4.14.0 to Stage
