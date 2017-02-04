@@ -19,6 +19,7 @@ Plugin 'tomtom/tlib_vim'
 Plugin 'garbas/vim-snipmate'
 " Includes snippets usable by snipmate
 Plugin 'honza/vim-snippets'
+Plugin 'grvcoelho/vim-javascript-snippets'
 
 Plugin 'ervandew/supertab'
 
@@ -34,10 +35,11 @@ Plugin 'mileszs/ack.vim'
 Plugin 'christoomey/vim-tmux-runner'
 Plugin 'christoomey/vim-tmux-navigator'
 
-Plugin 'pangloss/vim-javascript'
+"Plugin 'pangloss/vim-javascript'
 Plugin 'mxw/vim-jsx'
 "Plugin 'othree/yajs.vim'
 "Plugin 'othree/javascript-libraries-syntax.vim'
+Plugin 'nikvdp/ejs-syntax'
 
 call vundle#end()
 
