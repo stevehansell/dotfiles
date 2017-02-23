@@ -12,4 +12,4 @@ alias w='workon'
 
 alias t='tmux'
 
-alias k='clear'
+alias start='vim ~/.todo.md'

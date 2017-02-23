@@ -62,7 +62,10 @@ set -s escape-time 0
 
 # force a reload of the config file
 unbind r
-bind r source-file ~/.tmux.conf
+bind r source-file ~/.tmux.conf; display-message "Reloaded!"
+
+# Clear scrollback buffer
+bind-key C-l send-keys C-l \; clear-history
 
 unbind p
 bind p run-shell "spotify-playpause"
@@ -72,6 +75,10 @@ bind n run-shell "spotify-next-track"
 
 # Use vim keybindings in copy mode
 setw -g mode-keys vi
+
+# Reattach each new window to the user bootstrap namespace
+# # https://github.com/ChrisJohnsen/tmux-MacOSX-pasteboard
+set -g default-command "which reattach-to-user-namespace > /dev/null && reattach-to-user-namespace -l $SHELL || $SHELL -l"
 
 # Setup 'v' to begin selection as in Vim
 bind-key -t vi-copy v begin-selection
@@ -84,4 +91,4 @@ bind-key -t vi-copy Enter copy-pipe "reattach-to-user-namespace pbcopy"
 # Find occurences of "Error"
 bind-key e copy-mode \; send-keys "?Error" C-m
 
-run-shell ~/.dotfiles/tmux/tmux-open/open.tmux
+#run-shell ~/.dotfiles/tmux/tmux-open/open.tmux
