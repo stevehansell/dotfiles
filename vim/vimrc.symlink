@@ -32,6 +32,7 @@ Plugin 'mileszs/ack.vim'
 Plugin 'christoomey/vim-tmux-runner'
 Plugin 'christoomey/vim-tmux-navigator'
 
+Plugin 'dracula/vim'
 Plugin 'NLKNguyen/papercolor-theme'
 Plugin 'pangloss/vim-javascript'
 
@@ -45,14 +46,16 @@ call vundle#end()
 
 " Theme/UI {{{
 
-colorscheme PaperColor
+"colorscheme PaperColor
+colorscheme dracula
 set background=dark
 set t_Co=256            " No. of colors
 syntax enable           " Enables syntax processing
 syntax on
 
 let g:enable_bold_font = 1
-let g:airline_theme='papercolor'
+"let g:airline_theme='papercolor'
+let g:airline_theme='onedark'
 let g:airline_powerline_fonts=1
 set guifont=Hack                        " List of fonts which will be used for the GUI version of Vim.
 if !exists('g:airline_symbols')
