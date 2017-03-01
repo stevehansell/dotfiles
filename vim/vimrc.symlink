@@ -20,6 +20,7 @@ Plugin 'tomtom/tlib_vim'
 Plugin 'garbas/vim-snipmate'
 " Includes snippets usable by snipmate
 Plugin 'honza/vim-snippets'
+Plugin 'grvcoelho/vim-javascript-snippets'
 
 Plugin 'ervandew/supertab'
 
@@ -251,13 +252,15 @@ augroup configgroup
     autocmd FileType css,scss setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab smarttab shiftround
     autocmd FileType vim setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab smarttab shiftround
     autocmd FileType cucumber setlocal tabstop=2 shiftwidth=2 softtabstop=2 noexpandtab smarttab shiftround
-    autocmd BufEnter *.sh,*.zsh setlocal tabstop=2 shiftwidth=2 softtabstop=2
+    autocmd FileType yaml setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab smarttab shiftround
+    autocmd BufEnter *.sh setlocal tabstop=2
     autocmd BufRead,BufNewFile *.md setlocal textwidth=80 smarttab shiftround nospell
     autocmd BufEnter *.sh setlocal shiftwidth=2
     autocmd BufEnter *.sh setlocal softtabstop=2
     autocmd BufEnter Makefile setlocal noexpandtab
     autocmd BufNewFile *.py,*.pyw,*.c,*.h set fileformat=unix  " Use UNIX (\n) line endings
     autocmd FileType org setlocal textwidth=0 colorcolumn=0 tabstop=2 shiftwidth=2 softtabstop=2
+    autocmd BufReadPre *.ts let b:javascript_lib_use_typescript=1
 augroup END
 "}}}
 
