@@ -55,7 +55,7 @@ syntax on
 
 let g:enable_bold_font = 1
 "let g:airline_theme='papercolor'
-let g:airline_theme='onedark'
+let g:airline_theme='vice'
 let g:airline_powerline_fonts=1
 set guifont=Hack                        " List of fonts which will be used for the GUI version of Vim.
 if !exists('g:airline_symbols')
@@ -251,7 +251,7 @@ augroup configgroup
     autocmd FileType css,scss setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab smarttab shiftround
     autocmd FileType vim setlocal tabstop=2 shiftwidth=2 softtabstop=2 expandtab smarttab shiftround
     autocmd FileType cucumber setlocal tabstop=2 shiftwidth=2 softtabstop=2 noexpandtab smarttab shiftround
-    autocmd BufEnter *.sh setlocal tabstop=2
+    autocmd BufEnter *.sh,*.zsh setlocal tabstop=2 shiftwidth=2 softtabstop=2
     autocmd BufRead,BufNewFile *.md setlocal textwidth=80 smarttab shiftround nospell
     autocmd BufEnter *.sh setlocal shiftwidth=2
     autocmd BufEnter *.sh setlocal softtabstop=2
