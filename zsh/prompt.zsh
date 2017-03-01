@@ -38,7 +38,7 @@ set_prompt_symbol_color() {
 git_prompt() {
 	ref=$(command git symbolic-ref HEAD 2> /dev/null) || \
 		ref=$(command git rev-parse --short HEAD 2> /dev/null) || return
-	echo "%{$fg[white]%}[✭ ${ref#refs/heads/}]%{$reset_color%} "
+	echo "%{$fg[white]%}[⎇ ${ref#refs/heads/}]%{$reset_color%} "
 }
 
 
