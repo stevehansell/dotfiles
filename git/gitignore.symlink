@@ -3,3 +3,10 @@
 *.swp
 .ropeproject/
 *.json.gzip
+dump.rdb
+.project-notes
+.agignore
+.projectile
+.jsbeautifyrc
+TODOs.org
+NOTES.org

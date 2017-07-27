@@ -6,6 +6,7 @@ fi
 
 export LSCOLORS="exfxcxdxbxegedabagacad"
 export CLICOLOR=true
+export KEYTIMEOUT=1
 autoload -U colors && colors
 
 fpath=($ZSH/functions $fpath)
@@ -41,13 +42,6 @@ setopt complete_aliases
 
 zle -N newtab
 
-bindkey '^[^[[D' backward-word
-bindkey '^[^[[C' forward-word
-bindkey '^[[5D' beginning-of-line
-bindkey '^[[5C' end-of-line
-bindkey '^[[3~' delete-char
-bindkey '^[^N' newtab
-bindkey '^?' backward-delete-char
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/

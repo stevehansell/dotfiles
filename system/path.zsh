@@ -1,0 +1,1 @@
+PATH=~/.rbenv/shims:$PATH

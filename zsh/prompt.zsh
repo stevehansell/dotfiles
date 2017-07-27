@@ -29,7 +29,7 @@ set_prompt_symbol_color() {
 			fi
 		fi
 	else
-		COLOR="%{$fg_bold[black]%}"
+		COLOR="%{$fg_bold[white]%}"
 	fi
 	echo $COLOR
 }

@@ -1,2 +1,1 @@
-PATH="$PATH:$HOME/bin:$HOME/.dotfiles/bin"
-PATH="/usr/local/sbin:$PATH"
+PATH="/usr/local/Cellar:$HOME/bin:$HOME/.dotfiles/bin:/usr/local/sbin:$PATH"
