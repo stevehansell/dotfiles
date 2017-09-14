@@ -6,45 +6,45 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
 Plugin 'gmarik/Vundle.vim'
+
 Plugin 'tpope/vim-sensible'
-Plugin 'tpope/vim-fugitive'
-Plugin 'tpope/vim-surround'
+
+" File navigation
 Plugin 'kien/ctrlp.vim'
+
+" Theming
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
-Plugin 'bronson/vim-trailing-whitespace'
+Plugin 'dracula/vim'
+
+" Git
+Plugin 'airblade/vim-gitgutter'
+
+Plugin 'tpope/vim-surround'
+
 Plugin 'MarcWeber/vim-addon-mw-utils'
 Plugin 'tomtom/tlib_vim'
 
-Plugin 'garbas/vim-snipmate'
-" Includes snippets usable by snipmate
+Plugin 'lifepillar/vim-mucomplete'
 Plugin 'SirVer/ultisnips'
 Plugin 'honza/vim-snippets'
 
-Plugin 'ervandew/supertab'
-
-Plugin 'scrooloose/NERDCommenter'
-
 Plugin 'tpope/vim-dispatch'
-Plugin 'airblade/vim-gitgutter'
-
 Plugin 'mileszs/ack.vim'
 Plugin 'christoomey/vim-tmux-runner'
 Plugin 'christoomey/vim-tmux-navigator'
 
-Plugin 'dracula/vim'
-Plugin 'NLKNguyen/papercolor-theme'
-Plugin 'micha/vim-colors-solarized'
-Plugin 'crusoexia/vim-monokai'
-
+" Syntax
+Plugin 'tpope/vim-commentary'
 Plugin 'pangloss/vim-javascript'
+Plugin 'mxw/vim-jsx'
+Plugin 'moll/vim-node'
 Plugin 'elzr/vim-json'
-
 Plugin 'heavenshell/vim-jsdoc'
 "Plugin 'nikvdp/ejs-syntax'
 Plugin 'briancollins/vim-jst'
 Plugin 'gabrielelana/vim-markdown'
-Plugin 'leafgarland/typescript-vim'
+
 call vundle#end()
 
 " }}}
@@ -87,7 +87,8 @@ set showmatch           " Show matching [({})]
 set title               " Change terminal windows title
 set nowrap              " Do not wrap lines that are longer than the buffer width
 set textwidth=0         " Set to zero by default to disable line wrapping.
-set completeopt-=preview " Removes preview window for Insert mode completion
+" set completeopt-=preview " Removes preview window for Insert mode completion
+set completeopt+=menuone
 
 " Use the below highlight group when displaying bad whitespace is desired.
 highlight BadWhitespace ctermbg=red guibg=red
@@ -119,6 +120,7 @@ nnoremap <C-l> <C-W>l
 
 " Buffer Management {{{
 nnoremap <leader>bb :buffers<CR>
+nnoremap <leader>bd :bdelete<CR>
 nnoremap <leader>bp :bprevious<CR>
 nnoremap <leader>bn :bnext<CR>
 nnoremap <leader>bt <C-^>
@@ -165,7 +167,7 @@ nnoremap <Space><Space> :ccl<cr>
 " Trigger silver searcher for word under cursor
 nnoremap <Leader>ac :call SearchForCallSitesCursor()<CR>
 
-nnoremap <silent><C-n> :Explore<CR>
+nnoremap <silent><C-n> :Explore!<CR>
 "}}}
 
 " Project notes {{{
@@ -184,6 +186,7 @@ endfunction
 
 function! s:LoadNotes()
   setlocal filetype=markdown
+  setlocal nospell
 endfunction
 " }}}
 
@@ -201,16 +204,9 @@ set fileformats+=mac
 "}}}
 
 " Explore Settings {{{
-let g:netrw_list_hide= '\.pyc,__init__\.py,\.egg$,.*\.egg-info/$,\.ropeproject/$,\.DS_Store$,node_modules/$,\.git/$,\.json\.gzip$,\.vscode/$'
-" }}}
-
-" Fugitive Settings {{{
-nnoremap <leader>gs :Gstatus<cr>
-nnoremap <leader>gd :Gdiff<cr>
-nnoremap <leader>gp :Gpush<cr>
-nnoremap <leader>gP :Gpull<cr>
-nnoremap <leader>gl :Glog<cr>
-nnoremap <leader>gbl :Gblame<cr>
+let g:netrw_banner = 0
+let g:netrw_liststyle = 1
+let g:netrw_list_hide = '\.pyc,__init__\.py,\.egg$,.*\.egg-info/$,\.ropeproject/$,\.DS_Store$,node_modules/$,\.git/$,\.json\.gzip$,\.vscode/$'
 " }}}
 
 " CtrlP Settings {{{
@@ -229,10 +225,6 @@ endif
 
 " }}}
 
-" Syntastic Settings {{{
-let g:syntastic_cucumber_cucumber_args="--profile default"
-"}}}
-
 " Pymode Settings {{{
 let g:pymode_folding = 1
 let g:pymode_lint = 1
@@ -242,15 +234,21 @@ let g:pymode_lint_ignore = "W191,E501,W503"
 let g:pymode_lint_message = 1
 "}}}
 
+" mucomplete {{{
+call add(g:mucomplete#chains['default'], 'ulti')
+let g:mucomplete#enable_auto_at_startup = 1
+inoremap <expr> <c-e> mucomplete#popup_exit("\<c-e>")
+inoremap <expr> <c-y> mucomplete#popup_exit("\<c-y>")
+inoremap <expr>  <cr> mucomplete#popup_exit("\<cr>")
+set completeopt+=noselect,noinsert
+set shortmess+=c
+" }}}
+
 " UltiSnips {{{
-let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsExpandTrigger="<C-J>"
 let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 " }}}
-
-" SuperTab Settings {{{
-let g:SuperTabNoCompleteAfter=['^',',','\s']
-"}}}
 
 " Typescript Syntax Settings {{{
 let g:typescript_compiler_binary = 'tsc'
@@ -313,8 +311,8 @@ augroup END
 
  " JavaScript Libraries {{{
  let g:jsx_ext_required=0
-  "let g:used_javascript_libs = 'react,flux,chai'
-set conceallevel=0
+ let g:used_javascript_libs = 'react,flux,chai'
+ set conceallevel=0
 " }}}
 
 " Custom Functions {{{
