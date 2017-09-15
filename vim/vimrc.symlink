@@ -235,13 +235,18 @@ let g:pymode_lint_message = 1
 "}}}
 
 " mucomplete {{{
-call add(g:mucomplete#chains['default'], 'ulti')
+let g:mucomplete#chains = {
+    \ 'default' : ['path', 'ulti', 'omni', 'keyn', 'dict', 'uspl'],
+    \ 'vim'     : ['path', 'ulti', 'cmd', 'keyn']
+    \ }
 let g:mucomplete#enable_auto_at_startup = 1
+let g:mucomplete#buffer_relative_paths = 1
 inoremap <expr> <c-e> mucomplete#popup_exit("\<c-e>")
 inoremap <expr> <c-y> mucomplete#popup_exit("\<c-y>")
 inoremap <expr>  <cr> mucomplete#popup_exit("\<cr>")
 set completeopt+=noselect,noinsert
 set shortmess+=c
+set belloff+=ctrlg
 " }}}
 
 " UltiSnips {{{
@@ -311,7 +316,7 @@ augroup END
 
  " JavaScript Libraries {{{
  let g:jsx_ext_required=0
- let g:used_javascript_libs = 'react,flux,chai'
+ let g:used_javascript_libs = 'react,chai'
  set conceallevel=0
 " }}}
 
