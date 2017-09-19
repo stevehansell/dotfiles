@@ -17,17 +17,19 @@ Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
 Plugin 'dracula/vim'
 
+" Completion/Snippets
+Plugin 'lifepillar/vim-mucomplete'
+Plugin 'SirVer/ultisnips'
+Plugin 'honza/vim-snippets'
+Plugin 'tpope/vim-surround'
+
 " Git
 Plugin 'airblade/vim-gitgutter'
 
-Plugin 'tpope/vim-surround'
 
 Plugin 'MarcWeber/vim-addon-mw-utils'
 Plugin 'tomtom/tlib_vim'
 
-Plugin 'lifepillar/vim-mucomplete'
-Plugin 'SirVer/ultisnips'
-Plugin 'honza/vim-snippets'
 
 Plugin 'tpope/vim-dispatch'
 Plugin 'mileszs/ack.vim'
@@ -250,7 +252,7 @@ set belloff+=ctrlg
 " }}}
 
 " UltiSnips {{{
-let g:UltiSnipsExpandTrigger="<C-J>"
+let g:UltiSnipsExpandTrigger="<C-k>"
 let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 " }}}
