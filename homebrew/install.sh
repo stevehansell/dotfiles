@@ -13,7 +13,9 @@ then
 fi
 
 # Install homebrew packages
-brew install grc coreutils tmux reattach-to-user-namespace the_silver_searcher tree
-brew install vim --override-system-vim
+brew install grc coreutils tmux reattach-to-user-namespace
+brew install the_silver_searcher fzf tree ack
+brew install yarn git-extras diff-so-fancy
+brew install neovim
 
 exit 0
