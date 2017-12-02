@@ -11,3 +11,6 @@ dump.rdb
 TODOs.org
 NOTES.org
 Session.vim
+.tern-project
+.prettierrc
+.tern-port

@@ -25,7 +25,7 @@ set_prompt_symbol_color() {
 		if [[ "dirty" == $(parse_git_dirty) ]]; then
 			COLOR="%{$fg_bold[red]%}"
 			if [[ -n $(echo "$INDEX" | grep -E '^\?\?') ]]; then
-				COLOR="%{$fg_bold[magenta]%}"
+				COLOR="%{$fg_bold[cyan]%}"
 			fi
 		fi
 	else

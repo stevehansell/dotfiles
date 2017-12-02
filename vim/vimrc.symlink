@@ -14,10 +14,11 @@ Plugin 'kien/ctrlp.vim'
 
 " Theming
 Plugin 'vim-airline/vim-airline'
-Plugin 'vim-airline/vim-airline-themes'
 Plugin 'dracula/vim'
+" Plugin 'crusoexia/vim-dracula'
 
 " Completion/Snippets
+Plugin 'ternjs/tern_for_vim'
 Plugin 'lifepillar/vim-mucomplete'
 Plugin 'SirVer/ultisnips'
 Plugin 'honza/vim-snippets'
@@ -53,9 +54,9 @@ call vundle#end()
 
 " Theme/UI {{{
 
-set background=dark
-colorscheme dracula
+" set termguicolors
 set t_Co=256            " No. of colors
+colorscheme dracula
 syntax enable           " Enables syntax processing
 syntax on
 
@@ -94,6 +95,10 @@ set completeopt+=menuone
 
 " Use the below highlight group when displaying bad whitespace is desired.
 highlight BadWhitespace ctermbg=red guibg=red
+
+
+let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 " }}}
 
 " Searching {{{
@@ -121,11 +126,11 @@ nnoremap <C-l> <C-W>l
 " }}}
 
 " Buffer Management {{{
-nnoremap <leader>bb :buffers<CR>
-nnoremap <leader>bd :bdelete<CR>
-nnoremap <leader>bp :bprevious<CR>
-nnoremap <leader>bn :bnext<CR>
-nnoremap <leader>bt <C-^>
+nmap <leader>bb :buffers<CR>
+nmap <leader>bd :bdelete<CR>
+nmap <leader>bp :bprevious<CR>
+nmap <leader>bn :bnext<CR>
+nmap <leader>bt <C-^>
 "}}}
 
 " Mapping and Leader Shortcuts {{{
@@ -170,6 +175,9 @@ nnoremap <Space><Space> :ccl<cr>
 nnoremap <Leader>ac :call SearchForCallSitesCursor()<CR>
 
 nnoremap <silent><C-n> :Explore!<CR>
+
+nnoremap <leader>ft <cr>:call AltCommand(expand('%'), ':vsplit')<cr>
+
 "}}}
 
 " Project notes {{{
@@ -198,7 +206,6 @@ set diffopt+=vertical    " Always use vertical diffs
 
 " Backup and File Settings {{{
 
-map <leader>fw <esc>:w<CR>
 set nobackup            " Disable backup files
 set noswapfile          " Disable swap file creation
 set autoread " Autoreload file when modified outside of vim, but not IN Vim
@@ -234,6 +241,15 @@ let g:pymode_lint_on_write = 1
 let g:pymode_lint_unmodified = 1
 let g:pymode_lint_ignore = "W191,E501,W503"
 let g:pymode_lint_message = 1
+"}}}
+
+" Tern {{{
+
+nnoremap <leader>ag :TernDef<CR>
+nnoremap <leader>ap :TernDefPreview<CR>
+nnoremap <leader>add :TernDoc<CR>
+nnoremap <leader>adb :TernDocBrowse<CR>
+nnoremap <leader>ar :TernRefs<CR>
 "}}}
 
 " mucomplete {{{
@@ -329,4 +345,12 @@ function! SearchForCallSitesCursor()
   execute ":Ack! " . l:searchTerm . " " . getcwd()
 endfunction
 
+function! AltCommand(path, vim_command)
+  let l:alternate = system("find . -path ./node_modules -prune -or -path ./.tmp -prune -or -path ./.git -prune -or -type f -print | alt -f - " . a:path)
+  if empty(l:alternate)
+    echo "No alternate file for " . a:path . " exists!"
+  else
+    exec a:vim_command . " " . l:alternate
+  endif
+endfunction
 " }}}

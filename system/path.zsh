@@ -1,1 +1,1 @@
-PATH=~/.rbenv/shims:$PATH
+export PATH=$PATH:$VIMCONFIG/pack/bundle/start/fzf/bin

@@ -7,6 +7,9 @@ fi
 export LSCOLORS="exfxcxdxbxegedabagacad"
 export CLICOLOR=true
 export KEYTIMEOUT=1
+export VIMCONFIG="$HOME/.config/nvim"
+export VIMDATA="$HOME/.local/share/nvim"
+export FZF_DEFAULT_COMMAND='git ls-files'
 autoload -U colors && colors
 
 fpath=($ZSH/functions $fpath)
