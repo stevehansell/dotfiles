@@ -14,3 +14,5 @@ Session.vim
 .tern-project
 .prettierrc
 .tern-port
+.eslintrc.json
+.projections.json

@@ -1,4 +1,4 @@
-export EDITOR='vim'
+export EDITOR='nvim'
 export ZDOTDIR=$HOME
 export SAUCE_USERNAME='shansell'
 
